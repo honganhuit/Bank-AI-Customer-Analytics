@@ -189,28 +189,9 @@ if "user" not in st.session_state:
     st.session_state.user = ""
 
 
-# ================= VERIFY EMAIL =================
-
-query = st.query_params
-
-if "verify" in query:
-
-    code = query["verify"]
-
-    if verify_user(code):
-
-        st.success("Xác thực email thành công")
-        st.info("Bạn có thể đăng nhập")
-
-    else:
-
-        st.error("Link xác thực không hợp lệ hoặc đã dùng")
-
-    st.query_params.clear()
-
-
 # ================= RESET PASSWORD =================
 
+query = st.query_params
 if "reset" in query:
     token = query["reset"]
 
@@ -808,16 +789,8 @@ else:
 
             else:
 
-                code = str(uuid.uuid4())
-
-                add_user(user, pw, email, code)
-
-                link = f"{BASE_URL}/?verify={code}"
-
-                send_email(email, "Verify Account", f"Click link xác thực:\n{link}")
-
-                st.success("Đăng ký thành công")
-                st.info("Kiểm tra email để xác thực")
+                add_user(user, pw, email)
+                st.success("Đăng ký thành công. Bạn có thể đăng nhập.")
 
     elif choice == "Forgot Password":
 
