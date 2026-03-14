@@ -15,8 +15,7 @@ from email_utils import send_email
 
 MODEL_PATH = "rf_model.onnx"
 
-BASE_URL = "https://bank-ai-customer-analytics.streamlit.app"
-
+BASE_URL = st.secrets["BASE_URL"]
 st.set_page_config(page_title="ATBank System", layout="wide")
 
 create_tables()
