@@ -2,11 +2,19 @@ import smtplib
 import os
 from email.mime.text import MIMEText
 from dotenv import load_dotenv
+import streamlit as st
 
 load_dotenv()
 
-GMAIL_USER = os.getenv("GMAIL_USER")
-GMAIL_PASS = os.getenv("APP_PASSWORD")
+# Lấy email/password
+try:
+    # Streamlit Cloud
+    GMAIL_USER = st.secrets["email"]["address"]
+    GMAIL_PASS = st.secrets["email"]["password"]
+except Exception:
+    # Local
+    GMAIL_USER = os.getenv("EMAIL_ADDRESS")
+    GMAIL_PASS = os.getenv("EMAIL_PASSWORD")
 
 
 def send_email(to, subject, content):
