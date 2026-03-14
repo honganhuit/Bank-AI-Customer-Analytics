@@ -14,6 +14,7 @@ from email_utils import send_email
 
 
 MODEL_PATH = "rf_model.onnx"
+BASE_URL = "https://bank-ai-customer-analytics-dcqdjn8np2zrit9cygt7bv.streamlit.app"
 
 st.set_page_config(page_title="ATBank System", layout="wide")
 
@@ -196,10 +197,14 @@ if "verify" in query:
 
     code = query["verify"]
 
-    verify_user(code)
+    if verify_user(code):
 
-    st.success("Xác thực email thành công")
-    st.info("Bạn có thể đăng nhập")
+        st.success("Xác thực email thành công")
+        st.info("Bạn có thể đăng nhập")
+
+    else:
+
+        st.error("Link xác thực không hợp lệ hoặc đã dùng")
 
     st.query_params.clear()
 
@@ -207,8 +212,7 @@ if "verify" in query:
 # ================= RESET PASSWORD =================
 
 if "reset" in query:
-
-    token = query.get("reset")
+    token = query["reset"]
 
     email = get_email_by_token(token)
 
@@ -263,11 +267,12 @@ if st.session_state.login:
     choice = st.sidebar.selectbox("Menu", menu)
 
     # ================= HOME =================
-# ================= HOME =================
-# ================= HOME =================
+    # ================= HOME =================
+    # ================= HOME =================
     if choice == "Trang chủ":
 
-        st.markdown("""
+        st.markdown(
+            """
         <style>
 
         .hero{
@@ -317,12 +322,14 @@ if st.session_state.login:
         }
 
         </style>
-        """, unsafe_allow_html=True)
-
+        """,
+            unsafe_allow_html=True,
+        )
 
         # ================= HERO =================
 
-        st.markdown("""
+        st.markdown(
+            """
         <div class="hero">
 
         <div class="hero-title">
@@ -334,12 +341,12 @@ if st.session_state.login:
         </div>
 
         </div>
-        """, unsafe_allow_html=True)
-
+        """,
+            unsafe_allow_html=True,
+        )
 
         st.write("")
         st.write("")
-
 
         # ================= KPI =================
 
@@ -350,24 +357,19 @@ if st.session_state.login:
         col3.metric("Real-time Prediction", "Yes")
         col4.metric("System Version", "1.0")
 
-
         st.write("")
         st.write("")
-
 
         # ================= DASHBOARD PREVIEW =================
 
         st.subheader("📊 Analytics Dashboard Preview")
 
         st.image(
-            "https://images.unsplash.com/photo-1551288049-bebda4e38f71",
-            width="stretch"
+            "https://images.unsplash.com/photo-1551288049-bebda4e38f71", width="stretch"
         )
 
-
         st.write("")
         st.write("")
-
 
         # ================= FEATURES =================
 
@@ -376,42 +378,50 @@ if st.session_state.login:
         f1, f2, f3 = st.columns(3)
 
         with f1:
-            st.markdown("""
+            st.markdown(
+                """
             <div class="feature-card">
             <h3>📊 Data Analytics</h3>
             <p>Automatic analysis of customer datasets.</p>
             <p>Statistics, distributions and correlation insights.</p>
             </div>
-            """, unsafe_allow_html=True)
+            """,
+                unsafe_allow_html=True,
+            )
 
         with f2:
-            st.markdown("""
+            st.markdown(
+                """
             <div class="feature-card">
             <h3>🧠 AI Prediction</h3>
             <p>Predict customer churn probability.</p>
             <p>Powered by RandomForest Machine Learning model.</p>
             </div>
-            """, unsafe_allow_html=True)
+            """,
+                unsafe_allow_html=True,
+            )
 
         with f3:
-            st.markdown("""
+            st.markdown(
+                """
             <div class="feature-card">
             <h3>👥 Customer Segmentation</h3>
             <p>Cluster customers using KMeans.</p>
             <p>Discover hidden business insights.</p>
             </div>
-            """, unsafe_allow_html=True)
-
+            """,
+                unsafe_allow_html=True,
+            )
 
         st.write("")
         st.write("")
-
 
         # ================= WORKFLOW =================
 
         st.subheader("⚙️ System Workflow")
 
-        st.markdown("""
+        st.markdown(
+            """
         **1️⃣ Upload Dataset**  
         Upload customer dataset in CSV format.
 
@@ -429,20 +439,22 @@ if st.session_state.login:
 
         **6️⃣ Export Results**  
         Download analysis report and predictions.
-        """)
-
+        """
+        )
 
         st.write("")
         st.write("")
-
 
         # ================= FOOTER =================
 
-        st.markdown("""
+        st.markdown(
+            """
         <div class="footer">
         ATBank AI Customer Analytics Platform © 2026
         </div>
-        """, unsafe_allow_html=True)
+        """,
+            unsafe_allow_html=True,
+        )
     # ================= CHANGE USERNAME =================
 
     elif choice == "Đổi username":
@@ -525,7 +537,9 @@ if st.session_state.login:
 
             st.subheader("Data Types")
 
-            dtype_df = pd.DataFrame({"Column": df.columns, "Type": df.dtypes.astype(str)})
+            dtype_df = pd.DataFrame(
+                {"Column": df.columns, "Type": df.dtypes.astype(str)}
+            )
 
             st.dataframe(dtype_df)
 
@@ -598,6 +612,9 @@ if st.session_state.login:
             st.header("👥 Customer Segmentation")
 
             if len(numeric.columns) >= 2:
+
+                numeric = numeric.dropna()
+                df = df.loc[numeric.index]
 
                 kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
 
@@ -795,7 +812,7 @@ else:
 
                 add_user(user, pw, email, code)
 
-                link = f"http://localhost:8501/?verify={code}"
+                link = f"{BASE_URL}/?verify={code}"
 
                 send_email(email, "Verify Account", f"Click link xác thực:\n{link}")
 
@@ -820,7 +837,7 @@ else:
 
                 save_reset_token(email, token)
 
-                link = f"http://localhost:8501/?reset={token}"
+                link = f"{BASE_URL}/?reset={token}"
 
                 send_email(email, "Reset Password", f"Click link reset:\n{link}")
 
