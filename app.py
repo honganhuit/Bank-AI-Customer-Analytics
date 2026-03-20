@@ -15,10 +15,12 @@ from email_utils import send_email
 
 MODEL_PATH = "rf_model.onnx"
 
-BASE_URL = st.secrets["BASE_URL"]
 st.set_page_config(page_title="ATBank System", layout="wide")
 
 create_tables()
+
+if "page" not in st.session_state:
+    st.session_state.page = "Login"
 
 
 def ai_generate_report(df):
@@ -189,48 +191,6 @@ if "user" not in st.session_state:
     st.session_state.user = ""
 
 
-# ================= RESET PASSWORD =================
-
-query = st.query_params
-if "reset" in query:
-    token = query["reset"]
-
-    email = get_email_by_token(token)
-
-    if email:
-
-        st.title("Reset Password")
-
-        new_pw = st.text_input("Password mới", type="password")
-        confirm_pw = st.text_input("Confirm Password", type="password")
-
-        if st.button("Update Password"):
-
-            valid, msg = validate_password(new_pw)
-
-            if not valid:
-                st.error(msg)
-
-            elif new_pw != confirm_pw:
-                st.error("Password không khớp")
-
-            else:
-
-                update_password_by_email(email, new_pw)
-                delete_token(token)
-
-                st.success("Đổi mật khẩu thành công")
-
-                st.query_params.clear()
-                st.rerun()
-
-    else:
-
-        st.error("Link reset không hợp lệ")
-
-    st.stop()
-
-
 # ================= LOGIN SUCCESS =================
 
 if st.session_state.login:
@@ -247,8 +207,6 @@ if st.session_state.login:
 
     choice = st.sidebar.selectbox("Menu", menu)
 
-    # ================= HOME =================
-    # ================= HOME =================
     # ================= HOME =================
     if choice == "Trang chủ":
 
@@ -594,9 +552,6 @@ if st.session_state.login:
 
             if len(numeric.columns) >= 2:
 
-                numeric = numeric.dropna()
-                df = df.loc[numeric.index]
-
                 kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
 
                 df["Cluster"] = kmeans.fit_predict(numeric)
@@ -733,7 +688,9 @@ else:
 
     menu = ["Login", "Register", "Forgot Password"]
 
-    choice = st.sidebar.selectbox("Menu", menu)
+    choice = st.sidebar.selectbox("Menu", menu, index=menu.index(st.session_state.page))
+
+    st.session_state.page = choice
 
     if choice == "Login":
 
@@ -755,7 +712,7 @@ else:
 
             else:
 
-                st.error("Sai tài khoản hoặc chưa verify email")
+                st.error("Sai username hoặc password")
 
     elif choice == "Register":
 
@@ -763,34 +720,39 @@ else:
 
         user = st.text_input("Username")
         email = st.text_input("Email")
-
         pw = st.text_input("Password", type="password")
         confirm = st.text_input("Confirm Password", type="password")
 
         if st.button("Register"):
 
-            valid, msg = validate_password(pw)
+            user = user.strip()
+            email = email.lower().strip()
 
-            if not valid:
+            if not user or not email or not pw or not confirm:
+                st.error("Vui lòng nhập đầy đủ thông tin")
 
-                st.error(msg)
+            elif not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+                st.error("Email không hợp lệ")
 
             elif pw != confirm:
-
                 st.error("Password không khớp")
 
-            elif email_exists(email):
-
-                st.error("Email đã đăng ký")
-
-            elif username_exists(user):
-
-                st.error("Username đã tồn tại")
-
             else:
+                valid, msg = validate_password(pw)
 
-                add_user(user, pw, email)
-                st.success("Đăng ký thành công. Bạn có thể đăng nhập.")
+                if not valid:
+                    st.error(msg)
+
+                elif email_exists(email):
+                    st.error("Email đã tồn tại")
+
+                else:
+                    add_user(user, pw, email)
+
+                    st.success("Đăng ký thành công")
+
+                    st.session_state.page = "Login"
+                    st.rerun()
 
     elif choice == "Forgot Password":
 
@@ -798,20 +760,31 @@ else:
 
         email = st.text_input("Email")
 
-        if st.button("Send reset link"):
+        if st.button("Send Account Info"):
 
             if not email_exists(email):
-
                 st.error("Email chưa đăng ký")
 
             else:
+                user = get_username_by_email(email)
 
-                token = str(uuid.uuid4())
+                # tạo password random
+                new_pw = str(np.random.randint(100000, 999999))
 
-                save_reset_token(email, token)
+                # update password
+                update_password_by_email(email, new_pw)
 
-                link = f"{BASE_URL}/?reset={token}"
+                # gửi mail
+                send_email(
+                    email,
+                    "ATBank - Account Recovery",
+                    f"""
+    Username: {user}
 
-                send_email(email, "Reset Password", f"Click link reset:\n{link}")
+    New Password: {new_pw}
 
-                st.success("Đã gửi link reset vào email")
+    👉 Hãy đăng nhập và đổi password ngay.
+    """,
+                )
+
+                st.success("Đã gửi username & password mới qua email")
