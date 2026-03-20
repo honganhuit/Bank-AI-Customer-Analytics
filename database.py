@@ -4,12 +4,11 @@ import hashlib
 DB_PATH = "data.db"
 
 
-# ================= CONNECT =================
 def get_conn():
     return sqlite3.connect(DB_PATH, check_same_thread=False)
 
 
-# ================= INIT TABLE =================
+# ================= INIT =================
 def create_tables():
     conn = get_conn()
     c = conn.cursor()
@@ -18,8 +17,17 @@ def create_tables():
         """
     CREATE TABLE IF NOT EXISTS users(
         username TEXT PRIMARY KEY,
-        password TEXT NOT NULL,
-        email TEXT UNIQUE NOT NULL
+        password TEXT,
+        email TEXT UNIQUE
+    )
+    """
+    )
+
+    c.execute(
+        """
+    CREATE TABLE IF NOT EXISTS reset_codes(
+        username TEXT,
+        code TEXT
     )
     """
     )
@@ -28,7 +36,7 @@ def create_tables():
     conn.close()
 
 
-# ================= HASH PASSWORD =================
+# ================= HASH =================
 def hash_password(pw):
     return hashlib.sha256(pw.encode()).hexdigest()
 
@@ -40,15 +48,15 @@ def add_user(username, password, email):
         c = conn.cursor()
 
         c.execute(
-            "INSERT INTO users (username, password, email) VALUES (?, ?, ?)",
+            "INSERT INTO users VALUES (?, ?, ?)",
             (username, hash_password(password), email),
         )
 
         conn.commit()
         conn.close()
         return True
-
-    except:
+    except Exception as e:
+        print("Add user error:", e)
         return False
 
 
@@ -57,21 +65,15 @@ def login(username, password):
     conn = get_conn()
     c = conn.cursor()
 
-    c.execute(
-        "SELECT password FROM users WHERE username=?",
-        (username,),
-    )
-
+    c.execute("SELECT password FROM users WHERE username=?", (username,))
     res = c.fetchone()
+
     conn.close()
 
-    if res and res[0] == hash_password(password):
-        return True
-
-    return False
+    return res and res[0] == hash_password(password)
 
 
-# ================= CHECK EXIST =================
+# ================= CHECK =================
 def email_exists(email):
     conn = get_conn()
     c = conn.cursor()
@@ -94,7 +96,6 @@ def username_exists(username):
     return res is not None
 
 
-# ================= GET USER =================
 def get_username_by_email(email):
     conn = get_conn()
     c = conn.cursor()
@@ -120,19 +121,6 @@ def update_password(username, new_pw):
     conn.close()
 
 
-def update_password_by_email(email, new_pw):
-    conn = get_conn()
-    c = conn.cursor()
-
-    c.execute(
-        "UPDATE users SET password=? WHERE email=?",
-        (hash_password(new_pw), email),
-    )
-
-    conn.commit()
-    conn.close()
-
-
 def update_username(old, new):
     if username_exists(new):
         return False
@@ -140,11 +128,44 @@ def update_username(old, new):
     conn = get_conn()
     c = conn.cursor()
 
-    c.execute(
-        "UPDATE users SET username=? WHERE username=?",
-        (new, old),
-    )
+    c.execute("UPDATE users SET username=? WHERE username=?", (new, old))
 
     conn.commit()
     conn.close()
     return True
+
+
+# ================= RESET OTP =================
+def save_reset_code(username, code):
+    conn = get_conn()
+    c = conn.cursor()
+
+    c.execute("DELETE FROM reset_codes WHERE username=?", (username,))
+    c.execute("INSERT INTO reset_codes VALUES (?, ?)", (username, code))
+
+    conn.commit()
+    conn.close()
+
+
+def check_reset_code(username, code):
+    conn = get_conn()
+    c = conn.cursor()
+
+    c.execute(
+        "SELECT 1 FROM reset_codes WHERE username=? AND code=?",
+        (username, code),
+    )
+
+    res = c.fetchone()
+    conn.close()
+    return res is not None
+
+
+def clear_reset_code(username):
+    conn = get_conn()
+    c = conn.cursor()
+
+    c.execute("DELETE FROM reset_codes WHERE username=?", (username,))
+
+    conn.commit()
+    conn.close()

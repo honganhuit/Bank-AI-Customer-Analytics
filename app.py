@@ -9,7 +9,7 @@ import onnxruntime as ort
 import plotly.express as px
 from sklearn.cluster import KMeans
 
-from database import *
+import database as db
 from email_utils import send_email
 
 
@@ -17,10 +17,24 @@ MODEL_PATH = "rf_model.onnx"
 
 st.set_page_config(page_title="ATBank System", layout="wide")
 
-create_tables()
+db.create_tables()
+
 
 if "page" not in st.session_state:
     st.session_state.page = "Login"
+
+if "login" not in st.session_state:
+    st.session_state.login = False
+
+if "user" not in st.session_state:
+    st.session_state.user = ""
+
+
+if "reset_step" not in st.session_state:
+    st.session_state.reset_step = 1
+
+if "reset_user" not in st.session_state:
+    st.session_state.reset_user = ""
 
 
 def ai_generate_report(df):
@@ -701,7 +715,7 @@ else:
 
         if st.button("Login"):
 
-            res = login(user, pw)
+            res = db.login(user, pw)
 
             if res:
 
@@ -743,11 +757,11 @@ else:
                 if not valid:
                     st.error(msg)
 
-                elif email_exists(email):
+                elif db.email_exists(email):
                     st.error("Email đã tồn tại")
 
                 else:
-                    add_user(user, pw, email)
+                    db.add_user(user, pw, email)
 
                     st.success("Đăng ký thành công")
 
@@ -756,35 +770,55 @@ else:
 
     elif choice == "Forgot Password":
 
-        st.title("Forgot Password")
+        st.title("Reset Password")
 
-        email = st.text_input("Email")
+        if st.session_state.reset_step == 1:
 
-        if st.button("Send Account Info"):
+            email = st.text_input("Nhập email")
 
-            if not email_exists(email):
-                st.error("Email chưa đăng ký")
+            if st.button("Send OTP"):
 
-            else:
-                user = get_username_by_email(email)
+                if not db.email_exists(email):
+                    st.error("Email chưa đăng ký")
 
-                # tạo password random
-                new_pw = str(np.random.randint(100000, 999999))
+                else:
+                    user = db.get_username_by_email(email)
 
-                # update password
-                update_password_by_email(email, new_pw)
+                    code = str(np.random.randint(100000, 999999))
 
-                # gửi mail
-                send_email(
-                    email,
-                    "ATBank - Account Recovery",
-                    f"""
-    Username: {user}
+                    db.save_reset_code(user, code)
 
-    New Password: {new_pw}
+                    send_email(
+                        email,
+                        "ATBank - Reset Password",
+                        f"Mã OTP của bạn là: {code}",
+                    )
 
-    👉 Hãy đăng nhập và đổi password ngay.
-    """,
-                )
+                    st.session_state.reset_user = user
+                    st.session_state.reset_step = 2
 
-                st.success("Đã gửi username & password mới qua email")
+                    st.success("Đã gửi OTP qua email")
+                    st.rerun()
+
+        elif st.session_state.reset_step == 2:
+
+            code = st.text_input("Nhập OTP")
+            new_pw = st.text_input("Password mới", type="password")
+
+            if st.button("Reset Password"):
+
+                user = st.session_state.reset_user
+
+                if not db.check_reset_code(user, code):
+                    st.error("OTP không đúng")
+
+                else:
+                    db.update_password(user, new_pw)
+                    db.clear_reset_code(user)
+
+                    st.success("Đổi password thành công")
+
+                    st.session_state.reset_step = 1
+                    st.session_state.page = "Login"
+
+                    st.rerun()
