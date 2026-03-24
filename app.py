@@ -418,7 +418,7 @@ if st.session_state.login:
 
         if st.button("Update"):
 
-            update_username(st.session_state.user, new_user)
+            db.update_username(st.session_state.user, new_user)
 
             st.session_state.user = new_user
 
@@ -445,7 +445,7 @@ if st.session_state.login:
 
             else:
 
-                update_password(st.session_state.user, new_pw)
+                db.update_password(st.session_state.user, new_pw)
 
                 st.success("Đổi password thành công")
 
