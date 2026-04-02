@@ -1,127 +1,153 @@
-# 🏦 ATBank AI Customer Analytics
+# ATBank AI Customer Analytics
 
-AI-powered banking analytics platform for **customer churn prediction, automatic data insights, and customer segmentation**.  
-This platform demonstrates end-to-end **data science workflow** with **interactive dashboards**, helping analysts and bank managers make data-driven decisions.
+## 1. Project Overview
 
-Built with **Python, Streamlit, Machine Learning, ONNX, and Plotly**.
-
----
-
-## 🎯 Goal
-
-- Predict potential **customer churn** using historical banking data.
-- Provide **automatic data insights** for quick anomaly detection.
-- Perform **customer segmentation** to identify high-value and risky customers.
-- Offer an **interactive dashboard** for business analytics.
+ATBank AI Customer Analytics is a business-oriented system designed to support customer churn prediction, data analysis, and customer segmentation.  
+The system helps analysts and business users make data-driven decisions through structured workflows and insights.
 
 ---
 
-## 👤 User Stories & Use Cases
+## 2. Business Objectives
 
-### **User Story 1: Churn Prediction**
-
-- **As a** bank analyst
-- **I want to** upload a customer dataset
-- **So that** I can identify customers at risk of leaving the bank.
-
-**Use Case (Simplified Flow):**
-
-1. Login to the system
-2. Upload customer dataset (CSV)
-3. System validates dataset and detects missing/duplicate values
-4. AI model predicts churn probability (RandomForest ONNX model)
-5. System displays churn probabilities and risk levels (High/Medium/Low)
-6. User can export predictions (CSV)
-
-**Exceptions / Alternate Flows:**
-
-- Dataset with missing critical columns → Show error
-- Dataset with incompatible feature count → Show warning
+- Reduce customer churn rate
+- Support data-driven decision-making
+- Identify high-value and high-risk customers
+- Improve customer segmentation for marketing strategies
 
 ---
 
-### **User Story 2: Automatic Data Insights**
+## 3. Scope
 
-- **As a** data analyst
-- **I want to** receive automated analysis of the dataset
-- **So that** I can quickly identify anomalies and patterns.
+### 3.1 In Scope
 
-**Use Case (Simplified Flow):**
+- Customer churn prediction
+- Data analysis and insights generation
+- Customer segmentation
+- User account management
 
-1. Upload dataset
-2. System generates insights:
-   - Outliers detection
-   - Skewness and distribution analysis
-   - Missing value summary
-   - High correlation detection
-3. Insights are displayed with recommendations for preprocessing or further analysis
+### 3.2 Out of Scope
+
+- Real-time data processing
+- Integration with external banking systems
 
 ---
 
-### **User Story 3: Customer Segmentation**
+## 4. My Role – Business Analyst
 
-- **As a** marketing analyst
-- **I want to** cluster customers
-- **So that** I can identify high-value and risky customer segments.
+In this project, I performed the role of a Business Analyst:
 
-**Use Case (Simplified Flow):**
-
-1. Select numeric features for clustering
-2. System runs **K-Means clustering**
-3. Displays clusters in an interactive scatter plot
-4. Export cluster assignments for business actions
+- Gathered and analyzed business requirements to define system objectives
+- Defined functional and non-functional requirements to ensure system completeness
+- Designed business workflows and user flows to support user activities
+- Defined business rules and acceptance criteria for system validation
+- Created BA documents (BRD, User Stories, Use Cases) for clear communication
+- Supported SIT/UAT and validated system outputs against business expectations
 
 ---
 
-### **User Story 4: Account Management**
+## 5. BA Deliverables
 
-- **As a** platform user
-- **I want to** manage my account securely
-- **So that** I can login, reset, and change my password safely.
+The following Business Analysis artifacts were created:
 
-**Use Case (Simplified Flow):**
+- Business Requirement Document (BRD)
+- User Stories and Use Cases
+- Functional and Non-functional Requirements
+- Process Flow Diagram
+- Test Scenarios and Validation Rules
 
-1. User login / registration
-2. Forgot password → OTP verification via email -> Reset password
-3. Update username or password
-4. System enforces password strength rules
-
----
-
-## 📊 Workflow Overview
-
-1. **User Login / Registration** -> Secure authentication
-2. **Upload Customer Dataset** -> CSV input
-3. **Automatic Data Analysis** -> Outliers, missing values, correlations, distribution
-4. **Customer Segmentation** -> K-Means clustering visualization
-5. **Churn Prediction** → RandomForest ONNX model
-6. **Results Display & Export** -> Risk levels, CSV download
-7. **Visualization Dashboard** -> Interactive charts and metrics
-
-**Validation Rules:**
-
-- Required fields present in dataset
-- Correct data types
-- Minimum feature requirement for AI model
-- Email/password validation for user accounts
+All documents are available in:  
+`/BA-Documents/`
 
 ---
 
-## 🛠 Key Technologies
+## 6. Business Workflow
 
-- **Web & UI:** Python, Streamlit
-- **Data Science & ML:** Pandas, NumPy, Scikit-learn, ONNX Runtime
-- **Visualization:** Plotly, Matplotlib, Seaborn
-- **Database:** SQLite for user accounts and data storage
-- **Email & Utilities:** smtplib, dotenv for OTP and password reset
+The system follows the workflow below:
+
+User Login  
+→ Upload Dataset  
+→ Validate Data  
+→ Analyze Data  
+→ Perform Customer Segmentation  
+→ Predict Churn Risk  
+→ Display Results  
+→ Export Data
 
 ---
 
-## ⚙️ How to Run
+## 7. Key Business Rules
 
-1. Clone repository:
+- Dataset must contain required fields
+- Data must be in correct format
+- Churn risk classification:
+  - High: > 0.7
+  - Medium: 0.4 – 0.7
+  - Low: < 0.4
 
-```bash
-git clone https://github.com/honganhuit/Bank-AI-Customer-Analytics.git
-cd Bank-AI-Customer-Analytics
-```
+---
+
+## 8. Technical Implementation (Supporting Layer)
+
+- Python, Streamlit
+- Machine Learning models
+- SQLite database
+
+---
+
+## 9. Repository Structure
+
+/
+│
+├── BA-Documents/
+│ → Business Analysis artifacts (BRD, User Stories, Use Cases, Test Scenarios, etc.)
+│
+├── ATBank_Full_Diagrams/
+│
+│ ├── banking-system_user-flow.png
+│ │ → Business workflow diagram (viewable image)
+│ │
+│ ├── banking-system_user-flow.drawio
+│ │ → Editable workflow design
+│ │ Business process flow for churn prediction
+│ │
+│ ├── use-case-diagram.drawio
+│ │ → Editable Use Case diagram for platform
+│ │
+│ ├── activity-diagram.drawio
+│ │ → Editable Activity diagram (Main flow)
+│ │
+│ ├── sequence-diagram.drawio
+│ │ → Editable Sequence diagram (Churn Prediction flow)
+│ │
+│ └── system-architecture.drawio
+│ → Editable System Architecture diagram
+│
+├── app.py
+│ → Main application (supporting implementation)
+│
+├── database.py
+│ → Database operations
+│
+├── email_utils.py
+│ → Email and notification handling
+│
+├── rf_model.onnx
+│ → Machine learning model for churn prediction
+│
+├── test.csv
+│ → Sample dataset for testing
+│
+├── KHTUBDV2.ipynb
+│ → Data exploration and model development
+│
+├── requirements.txt
+│ → Project dependencies
+│
+├── runtime.txt
+│ → Runtime configuration
+│
+├── .gitignore
+│ → Git ignore rules
+│
+└── README.md
+→ Project overview and documentation
