@@ -2,7 +2,8 @@
 
 ## 1. Project Overview
 
-ATBank AI Customer Analytics is a business-oriented system designed to support customer churn prediction, data analysis, and customer segmentation.  
+ATBank AI Customer Analytics is a business-oriented system designed to support customer churn prediction, data analysis, and customer segmentation.
+
 The system helps analysts and business users make data-driven decisions through structured workflows and insights.
 
 ---
@@ -20,10 +21,10 @@ The system helps analysts and business users make data-driven decisions through 
 
 ### 3.1 In Scope
 
-- Customer churn prediction
-- Data analysis and insights generation
-- Customer segmentation
-- User account management
+- Customer churn prediction using machine learning models
+- Customer data analysis and insights generation
+- Customer segmentation based on behavioral and demographic data
+- User account management (registration, login, authentication)
 
 ### 3.2 Out of Scope
 
@@ -55,14 +56,13 @@ The following Business Analysis artifacts were created:
 - Process Flow Diagram
 - Test Scenarios and Validation Rules
 
-All documents are available in:  
-`/BA-Documents/`
+All documents are available in:
+
+/BA-Documents/
 
 ---
 
 ## 6. Business Workflow
-
-The system follows the workflow below:
 
 User Login  
 → Upload Dataset  
@@ -79,75 +79,57 @@ User Login
 
 - Dataset must contain required fields
 - Data must be in correct format
-- Churn risk classification:
-  - High: > 0.7
-  - Medium: 0.4 – 0.7
-  - Low: < 0.4
+
+Churn risk classification:
+
+- High: > 0.7
+- Medium: 0.4 – 0.7
+- Low: < 0.4
 
 ---
 
 ## 8. Technical Implementation (Supporting Layer)
 
-- Python, Streamlit
-- Machine Learning models
-- SQLite database
+- Frontend: Streamlit
+- Backend: Python
+- Machine Learning: Churn prediction model (ONNX)
+- Database: SQLite
 
 ---
 
 ## 9. Repository Structure
 
 /
-│
-├── BA-Documents/
-│ → Business Analysis artifacts (BRD, User Stories, Use Cases, Test Scenarios, etc.)
-│
-├── ATBank_Full_Diagrams/
-│
-│ ├── banking-system_user-flow.png
-│ │ → Business workflow diagram (viewable image)
-│ │
-│ ├── banking-system_user-flow.drawio
-│ │ → Editable workflow design
-│ │ Business process flow for churn prediction
-│ │
-│ ├── use-case-diagram.drawio
-│ │ → Editable Use Case diagram for platform
-│ │
-│ ├── activity-diagram.drawio
-│ │ → Editable Activity diagram (Main flow)
-│ │
-│ ├── sequence-diagram.drawio
-│ │ → Editable Sequence diagram (Churn Prediction flow)
-│ │
-│ └── system-architecture.drawio
-│ → Editable System Architecture diagram
-│
-├── app.py
-│ → Main application (supporting implementation)
-│
-├── database.py
-│ → Database operations
-│
-├── email_utils.py
-│ → Email and notification handling
-│
-├── rf_model.onnx
-│ → Machine learning model for churn prediction
-│
-├── test.csv
-│ → Sample dataset for testing
-│
-├── KHTUBDV2.ipynb
-│ → Data exploration and model development
-│
-├── requirements.txt
-│ → Project dependencies
-│
-├── runtime.txt
-│ → Runtime configuration
-│
-├── .gitignore
-│ → Git ignore rules
-│
+├── BA-Documents/  
+│ → Business Analysis artifacts (BRD, User Stories, Use Cases, Test Scenarios, etc.)  
+│  
+├── ATBank_Full_Diagrams/  
+│ ├── banking-system_user-flow.png  
+│ ├── banking-system_user-flow.drawio  
+│ ├── Business process flow for churn prediction.png  
+│ ├── Customer analysts system diagrams.png
+│ └── Customer analysts system.png
+│  
+├── app.py  
+├── KHTUBODV2.ipynb  
+├── database.py  
+├── email_utils.py  
+├── rf_model.onnx  
+├── test.csv  
+├── KHTUBDV2.ipynb  
+├── requirements.txt  
+├── runtime.txt  
+├── .gitignore  
 └── README.md
-→ Project overview and documentation
+
+---
+
+## 10. How to Run
+
+git clone https://github.com/honganhuit/ATBank-AI-Customer-Analytics.git  
+cd ATBank-AI-Customer-Analytics
+
+pip install -r requirements.txt  
+streamlit run app.py
+
+---

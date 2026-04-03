@@ -8,177 +8,90 @@ Define system-level requirements for ATBank AI Customer Analytics system.
 
 ---
 
-## 2. System Overview
+## 2. Functional Requirements
 
-### 2.1 Architecture
+### FR1: User Authentication
 
-- Frontend: Streamlit
-- Backend: Python (Pandas, NumPy)
-- ML Model: ONNX Runtime
-- Database: SQLite
-
----
-
-## 3. Functional Requirements
-
-### FR1: Authentication
-
-- Register account
-- Login / Logout
-- Validate email format
-- Password rules:
-  - ≥ 4 characters
-  - Contains letters and numbers
-- Reset password via OTP
+- FR1.1: System allows users to register with username, email, and password
+- FR1.2: System allows users to login with valid credentials
+- FR1.3: System allows password reset via OTP verification
+- FR1.4: System allows users to update username and password
 
 ---
 
-### FR2: Dataset Upload
+### FR2: Dataset Upload & Validation
 
-- Accept CSV only
-- Display dataset preview
-- Show row/column count
-
----
-
-### FR3: Data Validation
-
-- Detect missing values
-- Detect duplicates
-- Identify data types
+- FR2.1: System allows users to upload CSV files
+- FR2.2: System validates file format and structure
+- FR2.3: System detects missing values and duplicate records
+- FR2.4: System validates required features for processing
 
 ---
 
-### FR4: Data Analysis
+### FR3: Data Analysis
 
-- Calculate mean, median, std
-- Detect skewness
-- Detect outliers (mean ± 2\*std)
-- Detect correlation > 0.8
-- Generate AI report
-
----
-
-### FR5: Data Visualization
-
-- Histogram
-- Boxplot
-- Heatmap
-- Missing values chart
+- FR3.1: System generates statistical summary
+- FR3.2: System detects outliers
+- FR3.3: System identifies correlation between variables
+- FR3.4: System generates automated insights report
 
 ---
 
-### FR6: Customer Segmentation
+### FR4: Data Visualization
 
-- K-Means clustering
-- Numeric features only
-- Minimum 2 features
-- Output cluster labels
-
----
-
-### FR7: Churn Prediction
-
-- Load ONNX model
-- Validate feature count
-- Predict churn probability
+- FR4.1: System displays data distribution charts
+- FR4.2: System displays outlier visualization
+- FR4.3: System displays correlation heatmap
+- FR4.4: System displays missing values chart
 
 ---
 
-### FR8: Risk Classification
+### FR5: Customer Segmentation
 
-- High Risk: > 0.7
-- Medium Risk: 0.4 – 0.7
-- Low Risk: < 0.4
-
----
-
-### FR9: Dashboard
-
-- Dataset overview
-- Statistical summary
-- Risk distribution
-- Top 10 risky customers
-- AI insights
+- FR5.1: System allows feature selection
+- FR5.2: System performs customer segmentation
+- FR5.3: System displays segmentation results visually
 
 ---
 
-### FR10: Export
+### FR6: Churn Prediction
 
-- Download CSV file
+- FR6.1: System predicts churn probability
+- FR6.2: System classifies risk levels (High / Medium / Low)
+- FR6.3: System displays prediction results
 
 ---
 
-## 4. Non-Functional Requirements
+### FR7: Reporting & Export
+
+- FR7.1: System displays analysis results in dashboard
+- FR7.2: System allows users to download results as CSV
+- FR7.3: System highlights high-risk customers
+
+---
+
+## 3. Non-Functional Requirements
 
 ### Performance
 
-- Process within ~5 seconds
-
-### Usability
-
-- Simple UI
+- System should process datasets within 5 seconds for standard size
 
 ### Security
 
-- Password validation
-- OTP reset
-- Session handling
+- User authentication is required
+- Password must be validated
+- OTP verification is required for password reset
+
+### Usability
+
+- System interface should be simple and user-friendly
+- Users can perform tasks without technical knowledge
 
 ### Reliability
 
-- Handle errors gracefully
+- System handles invalid inputs with appropriate error messages
+- System prevents crashes during processing
 
 ### Scalability
 
-- Support medium datasets
-
----
-
-## 5. Data Requirements
-
-### Input
-
-- CSV format
-- Numeric features required
-
-### Output
-
-- Dataset with:
-  - Cluster
-  - Churn Probability
-  - Risk Level
-
----
-
-## 6. Constraints
-
-- Requires ONNX model
-- No real-time processing
-- No external integration
-
----
-
-## 7. Assumptions
-
-- Dataset is valid
-- User understands basic data
-- Email system works
-
----
-
-## 8. Error Handling
-
-- Invalid file → error
-- Missing data → warning
-- Model mismatch → stop
-- Login fail → error
-
----
-
-## 9. Success Criteria
-
-- Prediction works correctly
-- Dashboard displays correctly
-- Export works
-- No major errors
+- System supports increasing dataset size within reasonable limits
