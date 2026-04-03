@@ -1,14 +1,39 @@
 # REQUIREMENTS TRACEABILITY MATRIX (RTM)
 
-| BR ID | FR ID | Use Case | Test Case | Description           | Status |
-| ----- | ----- | -------- | --------- | --------------------- | ------ |
-| BR1   | FR1   | UC1      | TC01–TC07 | User Authentication   | Done   |
-| BR2   | FR2   | UC2      | TC08–TC11 | Upload Dataset        | Done   |
-| BR2   | FR3   | UC2      | TC12–TC14 | Data Validation       | Done   |
-| BR3   | FR4   | UC2      | TC15–TC17 | Data Analysis         | Done   |
-| BR3   | FR5   | UC2      | TC24      | Data Visualization    | Done   |
-| BR4   | FR6   | UC4      | TC18–TC20 | Customer Segmentation | Done   |
-| BR1   | FR7   | UC3      | TC21–TC23 | Churn Prediction      | Done   |
-| BR1   | FR8   | UC3      | TC21      | Risk Classification   | Done   |
-| BR3   | FR9   | UC2      | TC24–TC26 | Dashboard             | Done   |
-| BR3   | FR10  | UC2      | TC25      | Export Results        | Done   |
+## Overview
+
+This document ensures full traceability between business requirements, system functionalities, use cases, and test cases.  
+It helps verify that all requirements are implemented and properly tested.
+
+---
+
+## RTM Table
+
+| Business Requirement  | Functional Requirement        | Use Case          | Test Case                       | Description                                               | Priority | Status |
+| --------------------- | ----------------------------- | ----------------- | ------------------------------- | --------------------------------------------------------- | -------- | ------ |
+| User Authentication   | User can register account     | User Registration | Valid/Invalid input tests       | Allow new users to create account with email and password | High     | Done   |
+| User Authentication   | User can login system         | User Login        | Login success/failure tests     | Authenticate user credentials and grant access            | High     | Done   |
+| User Authentication   | User can reset password       | Forgot Password   | OTP verification tests          | Allow users to reset password via email OTP               | High     | Done   |
+| Data Upload           | Upload dataset (CSV)          | Upload Dataset    | File upload validation tests    | User uploads dataset for analysis                         | High     | Done   |
+| Data Validation       | Validate dataset structure    | Validate Data     | Missing column / datatype tests | Ensure dataset meets required schema                      | High     | Done   |
+| Data Analysis         | Generate statistical analysis | Analyze Data      | Data summary tests              | Compute statistics (mean, median, std)                    | Medium   | Done   |
+| Data Visualization    | Display charts and graphs     | View Dashboard    | Chart rendering tests           | Show histogram, boxplot, correlation heatmap              | Medium   | Done   |
+| Customer Segmentation | Cluster customers             | Segmentation      | Clustering result tests         | Group customers using KMeans algorithm                    | Medium   | Done   |
+| Churn Prediction      | Predict churn probability     | Predict Churn     | Model prediction tests          | Predict customer churn using ML model                     | High     | Done   |
+| Risk Classification   | Classify customer risk level  | View Risk Level   | Threshold validation tests      | Categorize customers into High/Medium/Low risk            | High     | Done   |
+| Dashboard             | Display analytics dashboard   | View Dashboard    | UI display tests                | Show metrics, dataset overview, insights                  | Medium   | Done   |
+| Export Results        | Export analysis results       | Export Data       | File export tests               | Allow users to download results as CSV                    | Medium   | Done   |
+
+---
+
+## Notes
+
+- Each business requirement is mapped to at least one functional requirement
+- All functional requirements are covered by test cases
+- Ensures no missing or untested functionality in the system
+
+---
+
+## Conclusion
+
+The RTM ensures that all requirements are traceable, implemented, and validated through testing, reducing risks and improving system quality.
